@@ -2,16 +2,226 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Punish Chat</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.1.1.js" integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA=" crossorigin="anonymous"></script>
-    <script src = "/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <title>Chat Room</title>
     <style>
       body{
         margin-top: 30px;
       }
+      #messageForm {
+        position: sticky;
+      }
       #messageArea {
-        display: none;
+      display: none;
+      }
+      #custom-search-input {
+       background: #e8e6e7 none repeat scroll 0 0;
+       margin: 0;
+       padding: 10px;
+      }
+        #custom-search-input .search-query {
+        background: #fff none repeat scroll 0 0 !important;
+        border-radius: 4px;
+        height: 33px;
+        margin-bottom: 0;
+        padding-left: 7px;
+        padding-right: 7px;
+        }
+        #custom-search-input button {
+        background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
+        border: 0 none;
+        border-radius: 3px;
+        color: #666666;
+        left: auto;
+        margin-bottom: 0;
+        margin-top: 7px;
+        padding: 2px 5px;
+        position: absolute;
+        right: 0;
+        z-index: 9999;
+        }
+        .search-query:focus + button {
+        z-index: 3;
+        }
+        .all_conversation button {
+        background: #f5f3f3 none repeat scroll 0 0;
+        border: 1px solid #dddddd;
+        height: 38px;
+        text-align: left;
+        width: 100%;
+        }
+        .all_conversation i {
+        background: #e9e7e8 none repeat scroll 0 0;
+        border-radius: 100px;
+        color: #636363;
+        font-size: 17px;
+        height: 30px;
+        line-height: 30px;
+        text-align: center;
+        width: 30px;
+        }
+        .all_conversation .caret {
+        bottom: 0;
+        margin: auto;
+        position: absolute;
+        right: 15px;
+        top: 0;
+        }
+        .all_conversation .dropdown-menu {
+        background: #f5f3f3 none repeat scroll 0 0;
+        border-radius: 0;
+        margin-top: 0;
+        padding: 0;
+        width: 100%;
+        }
+        .all_conversation ul li {
+        border-bottom: 1px solid #dddddd;
+        line-height: normal;
+        width: 100%;
+        }
+        .all_conversation ul li a:hover {
+        background: #dddddd none repeat scroll 0 0;
+        color:#333;
+        }
+        .all_conversation ul li a {
+       color: #333;
+       line-height: 30px;
+       padding: 3px 20px;
+      }
+        .member_list .chat-body {
+        margin-left: 47px;
+        margin-top: 0;
+        }
+        .top_nav {
+        overflow: visible;
+        }
+        .member_list .contact_sec {
+        margin-top: 3px;
+        }
+        .member_list li {
+        padding: 6px;
+        }
+        .member_list ul {
+        border: 1px solid #dddddd;
+        }
+        .chat-img img {
+        height: 34px;
+        width: 34px;
+        }
+        .member_list li {
+        border-bottom: 1px solid #dddddd;
+        padding: 6px;
+        }
+        form#userForm {
+          width:250px ;
+          margin: 00px auto;
+        }
+        input#username {
+          width: 250px;
+        }
+        input#usernamelog {
+          width: 250px;
+        }
+        .member_list li:last-child {
+        border-bottom:none;
+        }
+        .member_list {
+        height: 380px;
+        overflow-x: hidden;
+        overflow-y: auto;
+        }
+        .sub_menu_ {
+       background: #e8e6e7 none repeat scroll 0 0;
+       left: 100%;
+       max-width: 233px;
+       position: absolute;
+       width: 100%;
+      }
+      .sub_menu_ {
+       background: #f5f3f3 none repeat scroll 0 0;
+       border: 1px solid rgba(0, 0, 0, 0.15);
+       display: none;
+       left: 100%;
+       margin-left: 0;
+       max-width: 233px;
+       position: absolute;
+       top: 0;
+       width: 100%;
+      }
+      .all_conversation ul li:hover .sub_menu_ {
+       display: block;
+      }
+      .new_message_head button {
+       background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
+       border: medium none;
+      }
+      .new_message_head {
+       background: #f5f3f3 none repeat scroll 0 0;
+       float: left;
+       font-size: 13px;
+       font-weight: 600;
+       padding: 18px 10px;
+       width: 100%;
+      }
+      .message_section {
+       border: 1px solid #dddddd;
+      }
+      .chat_area {
+       float: left;
+       height: 300px;
+       overflow-x: hidden;
+       overflow-y: auto;
+       width: 100%;
+      }
+      .chat_area li {
+       padding: 14px 14px 0;
+      }
+      .chat_area li .chat-img1 img {
+       height: 40px;
+       width: 40px;
+      }
+      .chat_area .chat-body1 {
+       margin-left: 50px;
+      }
+      .chat-body1 p {
+       background: #fbf9fa none repeat scroll 0 0;
+       padding: 10px;
+      }
+      .chat_area .admin_chat .chat-body1 {
+       margin-left: 0;
+       margin-right: 50px;
+      }
+
+      .chat_area li:last-child {
+       padding-bottom: 10px;
+      }
+      .message_write {
+       background: #f5f3f3 none repeat scroll 0 0;
+       float: left;
+       padding: 15px;
+       width: 100%;
+      }
+
+      .message_write textarea.form-control {
+       height: 70px;
+       padding: 10px;
+      }
+      .chat_bottom {
+       float: left;
+       margin-top: 13px;
+       width: 100%;
+      }
+      .upload_btn {
+       color: #777777;
+      }
+      .sub_menu_ > li a, .sub_menu_ > li {
+       float: left;
+       width:100%;
+      }
+      .member_list li:hover {
+       background: #428bca none repeat scroll 0 0;
+       color: #fff;
+       cursor:pointer;
       }
     </style>
   </head>
@@ -23,44 +233,69 @@
             <label> Enter Username</label>
             <input class="form-control" id="username" />
             <br />
-            <input type="submit" class="btn btn-primary" value="Login">
+            <input id="usernamelog" type="submit" class="btn btn-primary" value="Login">
           </form>
         </div>
       </div>
+       <div class="chat_container" id="messageArea">
+          <div class="col-sm-3 chat_sidebar">
+        <div class="row">
+             <div class="all_conversation">
+                <button class="dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 
+                <span class="glyphicon glyphicon-globe"></span> Online Users
+                </button>
+             </div>
 
-      <div id="messageArea"class="row">
-        <div class="col-md-4">
-          <div class="well">
-            <h3>Online users</h3>
-              <ul id="users" class="list-group">
-
-              </ul>
+             <!--OLINE USERS-->
+             <div class="member_list" >
+                <ul class="list-unstyled" id="member_list">
+                </ul>
+             </div>
+           </div>
           </div>
-        </div>
-        <div class="col-md-8">
-          <div class="chat" id="chat">
-            <form id="messageForm">
-              <label> Enter message</label>
-              <textarea class="form-control" id="message"></textarea>
-              <br />
-              <input type="submit" class="btn btn-primary" value="Send message">
-            </form>
-          </div>
-        </div>
+          <!--chat_sidebar-->
+
+
+   <div class="col-sm-9 message_section">
+      <div class="row">
+        <div class="new_message_head">
+        </div><!--new_message_head-->
+
+        <div class="chat_area" id="chat_area">
+        <ul class="list-unstyled" id="chatlog"></ul>
+        </div><!--chat_area-->
+        <form id="messageForm" class="fixy">
+          <div class="message_write">
+             <textarea class="form-control" placeholder="type a message" id="message"></textarea>
+             <div class="clearfix"></div>
+             <div class="chat_bottom">
+                <input type="submit" class="pull-right btn btn-success" value="Send message">
+             </div>
+           </div>
+        </form>
+
       </div>
+          </div> <!--message_section-->
+       </div>
     </div>
+
+    <script src = "/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.js" integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA=" crossorigin="anonymous"></script>
+    <script src="https://use.fontawesome.com/45e03a14ce.js"></script>
     <script>
       $(function(){
         var socket = io.connect();
         var $messageForm = $('#messageForm');
         var $message = $('#message');
-        var $chat = $('#chat');
+        var $chat_area = $('#chat_area');
         var $userForm = $('#userForm');
         var $userFormArea = $('#userFormArea');
         var $messageArea = $('#messageArea');
         var $username = $('#username');
-        var $users = $('#users');
+        var $member_list = $('#member_list');
+        var $chatlog = $('#chatlog');
+        var date  = new Date();
 
         $messageForm.submit(function(e){
           e.preventDefault();
@@ -69,7 +304,7 @@
         });
 
         socket.on('new message', function(data){
-          $chat.append('<div class="well"><strong>'+data.user+' </strong> : '+data.msg+'</div>');
+          $chatlog.prepend('<li class="left clearfix"> <div class="chat-body1 clearfix"> <strong>'+data.user+' </strong> : <div class="chat-body1 clearfix"><p>'+data.msg+'</p></div><div class="chat_time pull-right"><span class="glyphicon glyphicon-send"></span> Sent on '+date.getHours()+':'+date.getMinutes()+'</div></div></li>');
         });
         $userForm.submit(function(e){
           e.preventDefault();
@@ -85,9 +320,9 @@
         socket.on('get users', function(data){
           var html = '';
           for ( i=0;i < data.length;i++){
-            html += '<li class="list-group-item">' +data[i]+ '</li>';
+            html += '<li class="left clearfix"> <span class="glyphicon glyphicon-user"></span><strong class="primary-font">   ' +data[i]+ '</strong></li>';
           }
-          $users.html(html);
+          $member_list.html(html);
 
         });
       });
