@@ -5,8 +5,14 @@ var io = require('socket.io').listen(server);
 users = [];
 connections = [];
 
-server.listen(process.env.PORT || 3000);
-console.log('server runnig...');
+
+let updateUsernames = () => {
+  io.sockets.emit('get users', users);
+}
+
+server.listen(process.env.PORT || 3000, () => {
+  console.log('server runnig...');
+});
 
 app.get('/', function(req,res){
   res.sendFile(__dirname + '/index.html');
@@ -17,29 +23,23 @@ io.sockets.on('connection' , function(socket){
   console.log('Connected : %s sockets connected', connections.length);
 
   //Dissconnet
-  socket.on('disconnect', function(data){
+  socket.on('disconnect', (data) => {
     users.splice(users.indexOf(socket.username),1);
     updateUsernames();
     connections.splice(connections.indexOf(socket),1);
     console.log('Disconnected: %s sockets connected', connections.length);
   });
-//Send Message
-socket.on('send message' , function(data){
-  console.log(data);
-  io.sockets.emit('new message' ,{msg: data, user: socket.username});
-});
+  //Send Message
+  socket.on('send message' , (data) => {
+    io.sockets.emit('new message' ,{msg: data, user: socket.username});
+  });
 
-// new User
-socket.on('new user', function(data,callback){
-  callback(true);
-  socket.username = data;
-  users.push(socket.username);
-  updateUsernames();
+  // new User
+  socket.on('new user', (data, callback) => {
+    callback(true);
+    socket.username = data;
+    users.push(socket.username);
+    updateUsernames();
 
-});
-
-  function updateUsernames() {
-    io.sockets.emit('get users', users);
-
-  }
+  });
 });
